@@ -1,0 +1,52 @@
+apply plugin: 'java'
+println "Project: " + project.name
+sourceCompatibility = '1.8'
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'
+
+// NetBeans will automatically add "run" and "debug" tasks relying on the
+// "mainClass" property. You may however define the property prior executing
+// tasks by passing a "-PmainClass=<QUALIFIED_CLASS_NAME>" argument.
+//
+// Note however, that you may define your own "run" and "debug" task if you
+// prefer. In this case NetBeans will not add these tasks but you may rely on
+// your own implementation.
+if (!hasProperty('mainClass')) {
+    ext.mainClass = 'HelloMain'
+}
+
+repositories {
+    mavenCentral()
+    // You may define additional repositories, or even remove "mavenCentral()".
+    // Read more about repositories here:
+    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:repositories
+      mavenCentral()
+    maven { url uri('../repo') }
+    ivy{
+        url "${nexusUrl}/nexus/content/repositories/releases"
+        layout "maven"
+    }
+    ivy{
+      url "${nexusUrl}/nexus/content/repositories/snapshots"
+      layout "maven"
+    }
+}
+
+dependencies {
+    // TODO: Add dependencies here ...
+    // You can read more about how to add dependency here:
+    //   http://www.gradle.org/docs/current/userguide/dependency_management.html#sec:how_to_declare_your_dependencies
+    //testCompile group: 'junit', name: 'junit', version: '4.10'
+    // 
+    // Declare the dependency for your favourite test framework you want to use in your tests.
+    // TestNG is also supported by the Gradle Test task. Just change the
+    // testCompile dependency to testCompile 'org.testng:testng:6.8.1' and add
+    // 'test.useTestNG()' to your build script.
+    testCompile "junit:junit:${versionJunit}"
+}
+
+test {
+    println "In Test: " + project.name
+// show standard out and standard error of the test JVM(s) on the console
+  testLogging.showStandardStreams = true
+  ignoreFailures = true
+}
